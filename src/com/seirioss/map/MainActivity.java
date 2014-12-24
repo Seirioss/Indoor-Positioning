@@ -3,6 +3,8 @@ package com.seirioss.map;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -19,12 +21,15 @@ import android.widget.TextView;
 
 
 public class MainActivity extends ActionBarActivity implements OnTouchListener {
+	
+
 	private Button button;
 	private ImageView imageView;
 	private ImageView icon;
 	private TextView textView;
 	
-
+	private SensorManager sensorManager;
+	private SensorData sensorData= new SensorData();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +39,8 @@ public class MainActivity extends ActionBarActivity implements OnTouchListener {
         imageView = (ImageView)findViewById(R.id.imageViewId);
         icon = (ImageView)findViewById(R.id.icon);
         textView = (TextView)findViewById(R.id.textViewId);
+       
+        sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         
         button.setOnClickListener(new OnClickListener() {
 			
@@ -44,6 +51,7 @@ public class MainActivity extends ActionBarActivity implements OnTouchListener {
 			imageView.setImageDrawable(resources.getDrawable(R.drawable.map));
 			icon.setImageDrawable(resources.getDrawable(R.drawable.ic_launcher));
 			
+			sensorManager.registerListener(sensorData, sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER), SensorManager.SENSOR_DELAY_UI);
 			//imageView.setOnTouchListener(MainActivity.this);
 			//BitmapDrawable bitmapDrawable = (BitmapDrawable) imageView.getDrawable();
 			//textView.setText("Height: " + bitmapDrawable.getBitmap().getHeight() + "\n" + "Width: " + bitmapDrawable.getBitmap().getWidth());
@@ -71,6 +79,12 @@ public class MainActivity extends ActionBarActivity implements OnTouchListener {
         return super.onOptionsItemSelected(item);
     }
 
+@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		sensorManager.unregisterListener(sensorData);
+	}
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
