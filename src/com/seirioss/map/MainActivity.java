@@ -1,5 +1,8 @@
 package com.seirioss.map;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -52,9 +55,9 @@ public class MainActivity extends ActionBarActivity implements OnTouchListener {
 			icon.setImageDrawable(resources.getDrawable(R.drawable.ic_launcher));
 			
 			sensorManager.registerListener(sensorData, sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER), SensorManager.SENSOR_DELAY_UI);
-			//imageView.setOnTouchListener(MainActivity.this);
-			//BitmapDrawable bitmapDrawable = (BitmapDrawable) imageView.getDrawable();
-			//textView.setText("Height: " + bitmapDrawable.getBitmap().getHeight() + "\n" + "Width: " + bitmapDrawable.getBitmap().getWidth());
+			imageView.setOnTouchListener(MainActivity.this);
+			BitmapDrawable bitmapDrawable = (BitmapDrawable) imageView.getDrawable();
+			textView.setText("Height: " + bitmapDrawable.getBitmap().getHeight() + "\n" + "Width: " + bitmapDrawable.getBitmap().getWidth());
 			}
 		});
     }
@@ -105,6 +108,19 @@ public class MainActivity extends ActionBarActivity implements OnTouchListener {
 		margin.setMargins(787, 1088, 787 + margin.width, 1088 + margin.height);
 		RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(margin);
 		view.setLayoutParams(layoutParams);
+	}
+	
+	public class StepReceiver extends BroadcastReceiver{
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			if ("mobile.android.MYBROADCAST".equals(intent.getAction())) {
+				String distance = "Distance: " + intent.getDoubleExtra("steps", 0);
+				textView.setText(distance);
+			}
+		}
+		
 	}
 	
 }
